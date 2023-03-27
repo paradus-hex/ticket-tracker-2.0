@@ -5,7 +5,7 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string(),
+  DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
