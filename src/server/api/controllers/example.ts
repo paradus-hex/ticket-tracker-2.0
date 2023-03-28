@@ -6,6 +6,8 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
+import userModel from "../models/user.model";
+
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -15,11 +17,11 @@ export const exampleRouter = createTRPCRouter({
       };
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+  getAllUsers: publicProcedure.query(({ ctx }) => {
+    return userModel.getAllUser(ctx);
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+    return "you can now see this secret messages!";
   }),
 });
