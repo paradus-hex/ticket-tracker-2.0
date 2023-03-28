@@ -1,10 +1,8 @@
 import React from "react";
-import SideBar from "./components/Sidebar";
-import AuthShowcase from "./components/AuthShowcase";
+import SideBar from "./Sidebar";
 import { useSession } from "next-auth/react";
 import { Box, Card, Typography } from "@mui/material";
-import Layout from "./components/Layout";
-const Dashboard = () => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const { status } = useSession();
 
   if (status === "loading") {
@@ -27,11 +25,9 @@ const Dashboard = () => {
   return (
     <div>
       <SideBar />
-      <div className="mt-48">
-        <AuthShowcase />
-      </div>
+      <div className="mt-48">{children}</div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Layout;
