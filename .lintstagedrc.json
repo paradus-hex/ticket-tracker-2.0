@@ -5,7 +5,7 @@
   ],
   "*.tsx": [
     "prettier --write",
-    "eslint"
+    "eslint --fix"
   ],
   "*.html": [
     "eslint",
