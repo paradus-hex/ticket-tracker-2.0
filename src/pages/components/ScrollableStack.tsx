@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { Stack, type StackProps, type StackTypeMap } from "@mui/material";
+import {
+  darken,
+  Stack,
+  type StackProps,
+  type StackTypeMap,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
 import {
   type OverridableComponent,
