@@ -9,6 +9,12 @@
     "lint": "next lint",
     "start": "next start"
   },
+  "husky": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.ts": "tsc-files --noEmit"
+  },
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
@@ -39,6 +45,8 @@
     "autoprefixer": "^10.4.14",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.6",
     "prettier-plugin-tailwindcss": "^0.2.5",
