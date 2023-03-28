@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { Stack, type StackProps, type StackTypeMap } from "@mui/material";
-import { grey } from "@mui/material/colors";
 import {
   type OverridableComponent,
   type OverridableTypeMap,
@@ -21,7 +20,11 @@ function createScrollableStack<TypeMap extends OverridableTypeMap>(
 const StyledStack = createScrollableStack<StackTypeMap>(Stack);
 
 export type ScrollableStackProps = StackProps;
-export function ScrollableStack({ children, ...props }: ScrollableStackProps) {
+
+export default function ScrollableStack({
+  children,
+  ...props
+}: ScrollableStackProps) {
   return (
     <StyledStack
       {...props}
