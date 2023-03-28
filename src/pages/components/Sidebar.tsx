@@ -18,7 +18,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { type CSSObject, type Theme, styled } from "@mui/material/styles";
-import { ScrollableStack } from "./ScrollableStack";
+import ScrollableStack from "./ScrollableStack";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { useSession } from "next-auth/react";
