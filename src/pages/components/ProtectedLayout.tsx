@@ -2,7 +2,7 @@ import React from "react";
 import SideBar from "./Sidebar";
 import { useSession } from "next-auth/react";
 import { Box, Card, Typography } from "@mui/material";
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { status } = useSession();
 
   if (status === "loading") {
@@ -30,4 +30,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout;
+export default ProtectedLayout;
