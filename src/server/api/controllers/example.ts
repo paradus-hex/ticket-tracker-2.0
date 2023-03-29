@@ -6,8 +6,8 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 
-import userModel from "../models/user.model";
-import projectsModel from "../models/projects.model";
+import usersModel from "../models/user.model";
+import projectsModel from "../models/project.model";
 
 export const exampleController = createTRPCRouter({
   hello: publicProcedure
@@ -19,7 +19,7 @@ export const exampleController = createTRPCRouter({
     }),
 
   getAllUsers: publicProcedure.query(({ ctx }) => {
-    return userModel.getAllUser(ctx);
+    return usersModel.getAllUsers(ctx);
   }),
 
   getSecretMessage: protectedProcedure.query(() => {

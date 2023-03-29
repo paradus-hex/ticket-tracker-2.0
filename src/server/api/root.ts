@@ -1,4 +1,5 @@
-import { projectController } from "./controllers/projects.controller";
+import { userController } from "./controllers/user.controller";
+import { projectController } from "./controllers/project.controller";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { exampleController } from "~/server/api/controllers/example";
 
@@ -9,7 +10,8 @@ import { exampleController } from "~/server/api/controllers/example";
  */
 export const appRouter = createTRPCRouter({
   example: exampleController,
-  projects: projectController,
+  project: projectController,
+  user: userController,
 });
 
 // export type definition of API

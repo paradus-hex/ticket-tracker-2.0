@@ -51,11 +51,8 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export default function ProjectsTable() {
-  const {
-    data: projectsData,
-    isLoading,
-    isSuccess,
-  } = api.example.getAllProjects.useQuery();
+  const { data: projectsData, isSuccess } =
+    api.project.getAllProjects.useQuery();
 
   const [rows, setRows] = React.useState(projectsData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -63,10 +60,8 @@ export default function ProjectsTable() {
   );
 
   React.useEffect(() => {
-    if (isSuccess) {
-      setRows(projectsData);
-    }
-  }, [projectsData]);
+    if (isSuccess) setRows(projectsData);
+  }, [isSuccess, projectsData]);
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -94,23 +89,23 @@ export default function ProjectsTable() {
     setRows(rows.filter((row) => row.id !== id));
   };
 
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
+  // const handleCancelClick = (id: GridRowId) => () => {
+  //   setRowModesModel({
+  //     ...rowModesModel,
+  //     [id]: { mode: GridRowModes.View, ignoreModifications: true },
+  //   });
 
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
+  //   const editedRow = rows.find((row) => row.id === id);
+  //   if (editedRow!.isNew) {
+  //     setRows(rows.filter((row) => row.id !== id));
+  //   }
+  // };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
+  // const processRowUpdate = (newRow: GridRowModel) => {
+  //   const updatedRow = { ...newRow, isNew: false };
+  //   setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+  //   return updatedRow;
+  // };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -146,7 +141,7 @@ export default function ProjectsTable() {
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
-              onClick={handleCancelClick(id)}
+              // onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
@@ -195,7 +190,7 @@ export default function ProjectsTable() {
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
+          // processRowUpdate={processRowUpdate}
           slots={{
             toolbar: EditToolbar,
           }}

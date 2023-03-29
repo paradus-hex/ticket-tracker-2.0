@@ -17,6 +17,7 @@ import {
   type GridRowId,
   type GridRowModel,
 } from "@mui/x-data-grid";
+import { api } from "~/utils/api";
 
 const initialRows: GridRowsProp = [
   {
@@ -47,10 +48,15 @@ const initialRows: GridRowsProp = [
 ];
 
 export default function UsersTable() {
-  const [rows, setRows] = React.useState(initialRows);
+  const { data: usersData, isSuccess } = api.user.getAllUsers.useQuery();
+  const [rows, setRows] = React.useState(usersData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+
+  React.useEffect(() => {
+    if (isSuccess) setRows(usersData);
+  }, [isSuccess, usersData]);
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -78,23 +84,23 @@ export default function UsersTable() {
     setRows(rows.filter((row) => row.id !== id));
   };
 
-  const handleCancelClick = (id: GridRowId) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
+  // const handleCancelClick = (id: GridRowId) => () => {
+  //   setRowModesModel({
+  //     ...rowModesModel,
+  //     [id]: { mode: GridRowModes.View, ignoreModifications: true },
+  //   });
 
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
+  //   const editedRow = rows.find((row) => row.id === id);
+  //   if (editedRow!.isNew) {
+  //     setRows(rows.filter((row) => row.id !== id));
+  //   }
+  // };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
+  // const processRowUpdate = (newRow: GridRowModel) => {
+  //   const updatedRow = { ...newRow, isNew: false };
+  //   setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+  //   return updatedRow;
+  // };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -125,7 +131,7 @@ export default function UsersTable() {
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
-              onClick={handleCancelClick(id)}
+              // onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
@@ -174,7 +180,7 @@ export default function UsersTable() {
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
+          // processRowUpdate={processRowUpdate}
           slotProps={{
             toolbar: { setRows, setRowModesModel },
           }}
