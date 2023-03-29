@@ -23,9 +23,9 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
     );
   }
   return (
-    <div>
+    <div className="flex h-screen items-center justify-center">
       <SideBar />
-      <div className="mt-48">{children}</div>
+      <div className="w-full">{children}</div>
     </div>
   );
 };
