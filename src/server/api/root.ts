@@ -1,5 +1,6 @@
+import { projectController } from "./controllers/projects.controller";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { exampleRouter } from "~/server/api/controllers/example";
+import { exampleController } from "~/server/api/controllers/example";
 
 /**
  * This is the primary router for your server.
@@ -7,7 +8,8 @@ import { exampleRouter } from "~/server/api/controllers/example";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
+  example: exampleController,
+  projects: projectController,
 });
 
 // export type definition of API

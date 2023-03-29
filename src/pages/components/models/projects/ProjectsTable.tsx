@@ -20,34 +20,7 @@ import {
   type GridRowId,
   type GridRowModel,
 } from "@mui/x-data-grid";
-
-const initialRows: GridRowsProp = [
-  {
-    id: 1,
-    name: "Yaseen",
-    age: 25,
-  },
-  {
-    id: 2,
-    name: "Anny",
-    age: 36,
-  },
-  {
-    id: 3,
-    name: "Safwan",
-    age: 19,
-  },
-  {
-    id: 4,
-    name: "Saad",
-    age: 28,
-  },
-  {
-    id: 5,
-    name: "Joe",
-    age: 23,
-  },
-];
+import { api } from "~/utils/api";
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -78,10 +51,22 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export default function ProjectsTable() {
-  const [rows, setRows] = React.useState(initialRows);
+  const {
+    data: projectsData,
+    isLoading,
+    isSuccess,
+  } = api.example.getAllProjects.useQuery();
+
+  const [rows, setRows] = React.useState(projectsData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      setRows(projectsData);
+    }
+  }, [projectsData]);
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -132,8 +117,13 @@ export default function ProjectsTable() {
   };
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", width: 180, editable: true },
-    { field: "age", headerName: "Age", type: "number", editable: true },
+    { field: "title", headerName: "Title", width: 180, editable: true },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 360,
+      editable: true,
+    },
     {
       field: "actions",
       type: "actions",

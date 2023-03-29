@@ -7,8 +7,9 @@ import {
 } from "~/server/api/trpc";
 
 import userModel from "../models/user.model";
+import projectsModel from "../models/projects.model";
 
-export const exampleRouter = createTRPCRouter({
+export const exampleController = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -23,5 +24,8 @@ export const exampleRouter = createTRPCRouter({
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret messages!";
+  }),
+  getAllProjects: publicProcedure.query(({ ctx }) => {
+    return projectsModel.getAllProjects(ctx);
   }),
 });

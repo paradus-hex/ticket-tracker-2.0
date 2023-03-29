@@ -1,15 +1,7 @@
-import { type Prisma, type PrismaClient } from "@prisma/client";
-import { type Session } from "next-auth";
+import { type ctxType } from "./../../../utils/types";
 
 const userModel = {
-  getAllUser: (ctx: {
-    session: Session | null;
-    prisma: PrismaClient<
-      Prisma.PrismaClientOptions,
-      never,
-      Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-    >;
-  }) => {
+  getAllUser: (ctx: ctxType) => {
     return ctx.prisma.user.findMany();
   },
 };
