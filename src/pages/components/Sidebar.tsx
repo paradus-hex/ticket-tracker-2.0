@@ -22,6 +22,7 @@ import ScrollableStack from "./ScrollableStack";
 import Link from "next/link";
 import { type ReactNode, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const drawerWidth = 250;
 
@@ -62,21 +63,54 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+// function SidebarItem({
+//   href,
+//   label,
+//   icon,
+// }: {
+//   href: string;
+//   label?: string;
+//   icon: ReactNode;
+// }) {
+//   return (
+//     <Link rel="noopener noreferrer" href={href}>
+//       <ListItemButton
+//         sx={{
+//           minHeight: 48,
+//           px: 2.5,
+//         }}
+//       >
+//         <Box mr={2}>{icon}</Box>
+//         {label && (
+//           <ListItemText
+//             primary={<Typography fontWeight={600}>{label}</Typography>}
+//             disableTypography
+//             color="secondary"
+//           />
+//         )}
+//       </ListItemButton>
+//     </Link>
+//   );
+// }
+
 function SidebarItem({
   href,
   label,
   icon,
+  isActive,
 }: {
   href: string;
   label?: string;
   icon: ReactNode;
+  isActive?: boolean;
 }) {
   return (
-    <Link rel="noopener noreferrer" href={href}>
+    <Link href={href}>
       <ListItemButton
         sx={{
           minHeight: 48,
           px: 2.5,
+          backgroundColor: isActive ? "#414141" : "transparent",
         }}
       >
         <Box mr={2}>{icon}</Box>
@@ -94,6 +128,7 @@ function SidebarItem({
 
 export default function SideBar() {
   const [showSidebar, setShowSidebar] = useState(false);
+  const router = useRouter();
 
   const { data: sessionData } = useSession();
 
@@ -157,76 +192,54 @@ export default function SideBar() {
             )}
           </List>
           <Stack my={1}>
-            <Tooltip title="Add Quiz" placement="right">
+            <Tooltip title="Dashboard" placement="right">
               <ListItem disablePadding onClick={closeSidebar}>
                 <SidebarItem
-                  href="/create-quiz"
-                  label={showSidebar ? "Add Quiz" : undefined}
+                  href="/dashboard"
+                  label={showSidebar ? "Dashboard" : undefined}
+                  icon={<AssessmentOutlinedIcon color="primary" />}
+                  isActive={router.pathname === "/dashboard"}
+                />
+              </ListItem>
+            </Tooltip>
+            <Tooltip title="Create Project" placement="right">
+              <ListItem disablePadding onClick={closeSidebar}>
+                <SidebarItem
+                  href="/create-project"
+                  label={showSidebar ? "Create Project" : undefined}
                   icon={<AddOutlinedIcon color="primary" />}
+                  isActive={router.pathname === "/create-project"}
                 />
               </ListItem>
             </Tooltip>
 
-            <Tooltip title="Import Quiz" placement="right">
-              <ListItem disablePadding onClick={closeSidebar}></ListItem>
-            </Tooltip>
-
-            <Tooltip title="My Quizzes" placement="right">
+            <Tooltip title="Projects" placement="right">
               <ListItem disablePadding onClick={closeSidebar}>
                 <SidebarItem
-                  href="/my-quizzes"
-                  label={showSidebar ? "My Quizzes" : undefined}
+                  href="/projects"
+                  label={showSidebar ? "Projects" : undefined}
                   icon={<QuizOutlinedIcon color="primary" />}
+                  isActive={router.pathname === "/projects"}
                 />
               </ListItem>
             </Tooltip>
 
+            <Tooltip title="Users" placement="right">
+              <ListItem disablePadding onClick={closeSidebar}>
+                <SidebarItem
+                  href="/users"
+                  label={showSidebar ? "Users" : undefined}
+                  icon={<GroupOutlinedIcon color="primary" />}
+                  isActive={router.pathname === "/users"}
+                />
+              </ListItem>
+            </Tooltip>
             <Tooltip title="Account Setting" placement="right">
               <ListItem disablePadding onClick={closeSidebar}>
                 <SidebarItem
                   href="/settings?tab=account"
                   label={showSidebar ? "Account" : undefined}
                   icon={<SettingsOutlinedIcon color="primary" />}
-                />
-              </ListItem>
-            </Tooltip>
-
-            <Tooltip title="My Reports" placement="right">
-              <ListItem disablePadding onClick={closeSidebar}>
-                <SidebarItem
-                  href="/my-reports"
-                  label={showSidebar ? "My Reports" : undefined}
-                  icon={<AssessmentOutlinedIcon color="primary" />}
-                />
-              </ListItem>
-            </Tooltip>
-
-            <Tooltip title="My Collections" placement="right">
-              <ListItem disablePadding onClick={closeSidebar}>
-                <SidebarItem
-                  href="/my-collections"
-                  label={showSidebar ? "My Collections" : undefined}
-                  icon={<FolderOutlinedIcon color="primary" />}
-                />
-              </ListItem>
-            </Tooltip>
-
-            <Tooltip title="My Groups" placement="right">
-              <ListItem disablePadding onClick={closeSidebar}>
-                <SidebarItem
-                  href="/my-groups"
-                  label={showSidebar ? "My Groups" : undefined}
-                  icon={<GroupOutlinedIcon color="primary" />}
-                />
-              </ListItem>
-            </Tooltip>
-
-            <Tooltip title="My Notifications" placement="right">
-              <ListItem disablePadding onClick={closeSidebar}>
-                <SidebarItem
-                  href="/my-notifications"
-                  label={showSidebar ? "My Notifications" : undefined}
-                  icon={<NotificationsOutlinedIcon color="primary" />}
                 />
               </ListItem>
             </Tooltip>
