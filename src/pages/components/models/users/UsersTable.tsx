@@ -107,13 +107,22 @@ export default function UsersTable() {
   };
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", width: 180, editable: true },
-    { field: "age", headerName: "Age", type: "number", editable: true },
+    { field: "name", headerName: "Name", flex: 2, editable: true },
+    { field: "email", headerName: "Email", flex: 2, editable: true },
+    {
+      field: "Role",
+      headerName: "Role",
+      type: "singleSelect",
+      valueOptions: ["Admin", "User"],
+      flex: 1,
+      editable: true,
+    },
+
     {
       field: "actions",
       type: "actions",
       headerName: "Actions",
-      width: 100,
+      flex: 1,
       cellClassName: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -163,7 +172,7 @@ export default function UsersTable() {
       <Box
         sx={{
           height: 500,
-          width: "80%",
+          width: "60%",
           "& .actions": {
             color: "text.secondary",
           },
