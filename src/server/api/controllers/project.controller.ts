@@ -2,6 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import projectModel from "../models/project.model";
 import { z } from "zod";
+import { prisma } from "~/server/db";
 
 const createProjectPayloadSchema = z.object({
   title: z.string().max(100),
@@ -17,5 +18,19 @@ export const projectController = createTRPCRouter({
   ),
   createProject: protectedProcedure
     .input(createProjectPayloadSchema)
-    .mutation(({ input, ctx }) => projectModel.createProject(input)),
+    .mutation(({ input }) => projectModel.createProject(input)),
+  deleteProject: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(
+      async ({ input }) =>
+        await prisma.project.delete({
+          where: {
+            id: input.id,
+          },
+        })
+    ),
 });

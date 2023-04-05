@@ -1,59 +1,33 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
-  type GridRowsProp,
   type GridRowModesModel,
   GridRowModes,
   DataGrid,
   type GridColDef,
   type GridRowParams,
   type MuiEvent,
-  GridToolbarContainer,
   GridActionsCellItem,
   type GridEventListener,
   type GridRowId,
-  type GridRowModel,
 } from "@mui/x-data-grid";
 import { api } from "~/utils/api";
-import { Console } from "console";
-
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
-  ) => void;
-}
-
-function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
-
-  const handleClick = () => {
-    const id = 1;
-    setRows((oldRows) => [...oldRows, { id, name: "", age: "", isNew: true }]);
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
-    }));
-  };
-
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
-  );
-}
 
 export default function ProjectsTable() {
   const { data: projectsData, isSuccess } =
     api.project.getAllProjects.useQuery();
+
+  const utils = api.useContext();
+
+  const { mutateAsync } = api.project.deleteProject.useMutation({
+    onSuccess() {
+      void utils.project.getAllProjects.invalidate();
+    },
+  });
 
   const [rows, setRows] = React.useState(projectsData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -62,7 +36,6 @@ export default function ProjectsTable() {
 
   React.useEffect(() => {
     if (isSuccess) setRows(projectsData);
-    console.log(rows);
   }, [isSuccess, projectsData, rows]);
 
   const handleRowEditStart = (
@@ -87,7 +60,9 @@ export default function ProjectsTable() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
+  const handleDeleteClick = (id: string) => () => {
+    console.log(id, "hello");
+    void mutateAsync({ id });
     setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -151,7 +126,7 @@ export default function ProjectsTable() {
             key={id}
             icon={<DeleteIcon />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            onClick={handleDeleteClick(id as string)}
             color="inherit"
           />,
         ];
@@ -182,12 +157,6 @@ export default function ProjectsTable() {
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
           // processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
         />
       </Box>
     </Box>
