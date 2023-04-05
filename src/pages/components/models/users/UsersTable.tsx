@@ -15,10 +15,12 @@ import {
 } from "@mui/x-data-grid";
 import { api } from "~/utils/api";
 import { type UserRoleUpdatePayloadType } from "~/server/api/controllers/user.controller";
+import { useRouter } from "next/router";
 
 export default function UsersTable() {
   const { data: usersData, isSuccess } = api.user.getAllUsers.useQuery();
   const { mutateAsync } = api.user.updateRole.useMutation();
+  const router = useRouter();
 
   const [rows, setRows] = React.useState(usersData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -27,6 +29,7 @@ export default function UsersTable() {
 
   React.useEffect(() => {
     if (isSuccess) setRows(usersData);
+    console.log(rows, "Here");
   }, [isSuccess, usersData]);
 
   const handleEditClick = (id: GridRowId) => () => {
@@ -146,6 +149,9 @@ export default function UsersTable() {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
+          onRowClick={(params) => {
+            void router.push(`/users/${params.id}`);
+          }}
         />
       </Box>
     </Box>

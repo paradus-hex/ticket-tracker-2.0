@@ -1,6 +1,6 @@
 import React from "react";
-import UsersTable from "./components/models/users/UsersTable";
-import ProtectedLayout from "./components/ProtectedLayout";
+import UsersTable from "../components/models/users/UsersTable";
+import ProtectedLayout from "../components/ProtectedLayout";
 
 const Users = () => {
   return (

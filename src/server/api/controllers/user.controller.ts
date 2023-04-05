@@ -47,4 +47,7 @@ export const userController = createTRPCRouter({
 
       return updatedUser;
     }),
+  getUserById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ input }) => prisma.user.findFirst({ where: { id: input.id } })),
 });
