@@ -10,10 +10,7 @@ import {
   GridRowModes,
   DataGrid,
   type GridColDef,
-  type GridRowParams,
-  type MuiEvent,
   GridActionsCellItem,
-  type GridEventListener,
   type GridRowId,
   type GridRowModel,
 } from "@mui/x-data-grid";
@@ -39,8 +36,6 @@ export default function ProjectsTable() {
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
-  const [updateProjectData, setUpdateProjectData] =
-    React.useState<UpdateProjectPayloadType>({} as UpdateProjectPayloadType);
 
   React.useEffect(() => {
     if (isSuccess) setRows(projectsData);

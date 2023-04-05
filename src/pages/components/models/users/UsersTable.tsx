@@ -16,11 +16,13 @@ import {
 import { api } from "~/utils/api";
 import { type UserRoleUpdatePayloadType } from "~/server/api/controllers/user.controller";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 export default function UsersTable() {
   const { data: usersData, isSuccess } = api.user.getAllUsers.useQuery();
   const { mutateAsync } = api.user.updateRole.useMutation();
   const router = useRouter();
+  const { data: userSession } = useSession();
 
   const [rows, setRows] = React.useState(usersData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -29,7 +31,6 @@ export default function UsersTable() {
 
   React.useEffect(() => {
     if (isSuccess) setRows(usersData);
-    console.log(rows, "Here");
   }, [isSuccess, usersData]);
 
   const handleEditClick = (id: GridRowId) => () => {
@@ -67,7 +68,7 @@ export default function UsersTable() {
     setRowModesModel(newRowModesModel);
   };
 
-  const columns: GridColDef[] = [
+  const adminColumns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 2 },
     { field: "email", headerName: "Email", flex: 2 },
     {
@@ -128,6 +129,19 @@ export default function UsersTable() {
     },
   ];
 
+  const userColumns: GridColDef[] = [
+    { field: "name", headerName: "Name", flex: 2 },
+    { field: "email", headerName: "Email", flex: 2 },
+    {
+      field: "role",
+      headerName: "Role",
+      type: "singleSelect",
+      valueOptions: ["ADMIN", "USER"],
+      flex: 1,
+      editable: true,
+    },
+  ];
+
   return (
     <Box className="flex items-center justify-center">
       <Box
@@ -142,17 +156,27 @@ export default function UsersTable() {
           },
         }}
       >
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          processRowUpdate={processRowUpdate}
-          onRowClick={(params) => {
-            void router.push(`/users/${params.id}`);
-          }}
-        />
+        {userSession && userSession.user.role === "ADMIN" ? (
+          <DataGrid
+            rows={rows}
+            columns={adminColumns}
+            editMode="row"
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            processRowUpdate={processRowUpdate}
+            onRowClick={(params) => {
+              void router.push(`/users/${params.id}`);
+            }}
+          />
+        ) : (
+          <DataGrid
+            rows={rows}
+            columns={userColumns}
+            onRowClick={(params) => {
+              void router.push(`/users/${params.id}`);
+            }}
+          />
+        )}
       </Box>
     </Box>
   );
