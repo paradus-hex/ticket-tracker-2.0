@@ -8,8 +8,19 @@ const createProjectPayloadSchema = z.object({
   title: z.string().max(100),
   description: z.string(),
 });
+
+const updateProjectPayloadSchema = z.object({
+  id: z.string(),
+  title: z.string().max(100),
+  description: z.string(),
+});
+
 export type CreateProjectPayloadType = z.infer<
   typeof createProjectPayloadSchema
+>;
+
+export type UpdateProjectPayloadType = z.infer<
+  typeof updateProjectPayloadSchema
 >;
 
 export const projectController = createTRPCRouter({
@@ -32,5 +43,18 @@ export const projectController = createTRPCRouter({
             id: input.id,
           },
         })
+    ),
+  updateProject: protectedProcedure
+    .input(updateProjectPayloadSchema)
+    .mutation(({ input }) =>
+      prisma.project.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          title: input.title,
+          description: input.description,
+        },
+      })
     ),
 });
