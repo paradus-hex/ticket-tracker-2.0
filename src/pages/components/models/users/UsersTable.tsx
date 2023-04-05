@@ -5,22 +5,21 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
-  type GridRowsProp,
   type GridRowModesModel,
   GridRowModes,
   DataGrid,
   type GridColDef,
-  type GridRowParams,
-  type MuiEvent,
   GridActionsCellItem,
-  type GridEventListener,
   type GridRowId,
   type GridRowModel,
 } from "@mui/x-data-grid";
 import { api } from "~/utils/api";
+import { type UserRoleUpdatePayloadType } from "~/server/api/controllers/user.controller";
 
 export default function UsersTable() {
   const { data: usersData, isSuccess } = api.user.getAllUsers.useQuery();
+  const { mutateAsync } = api.user.updateRole.useMutation();
+
   const [rows, setRows] = React.useState(usersData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
@@ -29,20 +28,6 @@ export default function UsersTable() {
   React.useEffect(() => {
     if (isSuccess) setRows(usersData);
   }, [isSuccess, usersData]);
-
-  const handleRowEditStart = (
-    params: GridRowParams,
-    event: MuiEvent<React.SyntheticEvent>
-  ) => {
-    event.defaultMuiPrevented = true;
-  };
-
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
-    params,
-    event
-  ) => {
-    event.defaultMuiPrevented = true;
-  };
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -64,7 +49,14 @@ export default function UsersTable() {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
+    const updatedRow = { ...newRow } as Partial<UserRoleUpdatePayloadType>;
+    const { id, role } = updatedRow;
+
+    // Ensure both id and role are defined before calling mutateAsync
+    if (id !== undefined && role !== undefined) {
+      void mutateAsync({ id, role });
+    }
+
     return updatedRow;
   };
 
@@ -73,13 +65,13 @@ export default function UsersTable() {
   };
 
   const columns: GridColDef[] = [
-    { field: "name", headerName: "Name", flex: 2, editable: true },
-    { field: "email", headerName: "Email", flex: 2, editable: true },
+    { field: "name", headerName: "Name", flex: 2 },
+    { field: "email", headerName: "Email", flex: 2 },
     {
-      field: "Role",
+      field: "role",
       headerName: "Role",
       type: "singleSelect",
-      valueOptions: ["Admin", "User"],
+      valueOptions: ["ADMIN", "USER"],
       flex: 1,
       editable: true,
     },
@@ -153,12 +145,7 @@ export default function UsersTable() {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStart={handleRowEditStart}
-          onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
         />
       </Box>
     </Box>
