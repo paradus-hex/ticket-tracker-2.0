@@ -6,12 +6,14 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 const IndividualUserPage = () => {
   const { id } = useRouter().query;
-  const { data, isLoading, isSuccess } = api.user.getUserById.useQuery({ id });
+  const { data, isLoading, isSuccess } = api.user.getUserById.useQuery({
+    id: id as string,
+  });
 
-  let dummyUser;
+  let clickedUser;
 
   if (data && isSuccess) {
-    dummyUser = {
+    clickedUser = {
       name: data.name,
       email: data.email,
       image: data.image,
@@ -28,6 +30,7 @@ const IndividualUserPage = () => {
       </ProtectedLayout>
     );
   }
+
   return (
     <ProtectedLayout>
       {isSuccess && data && (
@@ -35,7 +38,7 @@ const IndividualUserPage = () => {
           className="flex min-h-screen items-center justify-center"
           onClick={() => console.log(id)}
         >
-          <UserCard user={dummyUser as User} />
+          <UserCard user={clickedUser as User} />
         </div>
       )}
     </ProtectedLayout>
