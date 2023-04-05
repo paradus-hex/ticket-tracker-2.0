@@ -31,6 +31,11 @@ model Account {
   @@index([userId])
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -49,6 +54,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role          Role      @default(USER)
 }
 
 model VerificationToken {
