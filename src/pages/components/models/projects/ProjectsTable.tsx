@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import EditIcon from "@mui/icons-material/Edit";
@@ -14,8 +15,10 @@ import {
   GridActionsCellItem,
   type GridEventListener,
   type GridRowId,
+  type GridRowModel,
 } from "@mui/x-data-grid";
 import { api } from "~/utils/api";
+import { type UpdateProjectPayloadType } from "~/server/api/controllers/project.controller";
 
 export default function ProjectsTable() {
   const { data: projectsData, isSuccess } =
@@ -29,28 +32,19 @@ export default function ProjectsTable() {
     },
   });
 
+  const { mutateAsync: updateProject } =
+    api.project.updateProject.useMutation();
+
   const [rows, setRows] = React.useState(projectsData ?? []);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+  const [updateProjectData, setUpdateProjectData] =
+    React.useState<UpdateProjectPayloadType>({} as UpdateProjectPayloadType);
 
   React.useEffect(() => {
     if (isSuccess) setRows(projectsData);
   }, [isSuccess, projectsData, rows]);
-
-  const handleRowEditStart = (
-    params: GridRowParams,
-    event: MuiEvent<React.SyntheticEvent>
-  ) => {
-    event.defaultMuiPrevented = true;
-  };
-
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
-    params,
-    event
-  ) => {
-    event.defaultMuiPrevented = true;
-  };
 
   const handleEditClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -75,6 +69,17 @@ export default function ProjectsTable() {
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
+  };
+
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow } as UpdateProjectPayloadType;
+
+    void updateProject({
+      id: updatedRow.id,
+      title: updatedRow.title,
+      description: updatedRow.description,
+    } as UpdateProjectPayloadType);
+    return updatedRow;
   };
 
   const columns: GridColDef[] = [
@@ -154,9 +159,7 @@ export default function ProjectsTable() {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStart={handleRowEditStart}
-          onRowEditStop={handleRowEditStop}
-          // processRowUpdate={processRowUpdate}
+          processRowUpdate={processRowUpdate}
         />
       </Box>
     </Box>
