@@ -21,6 +21,7 @@ import {
   type GridRowModel,
 } from "@mui/x-data-grid";
 import { api } from "~/utils/api";
+import { Console } from "console";
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -33,7 +34,7 @@ function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
 
   const handleClick = () => {
-    const id = Math.random().toString();
+    const id = 1;
     setRows((oldRows) => [...oldRows, { id, name: "", age: "", isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -61,7 +62,8 @@ export default function ProjectsTable() {
 
   React.useEffect(() => {
     if (isSuccess) setRows(projectsData);
-  }, [isSuccess, projectsData]);
+    console.log(rows);
+  }, [isSuccess, projectsData, rows]);
 
   const handleRowEditStart = (
     params: GridRowParams,
@@ -89,23 +91,12 @@ export default function ProjectsTable() {
     setRows(rows.filter((row) => row.id !== id));
   };
 
-  // const handleCancelClick = (id: GridRowId) => () => {
-  //   setRowModesModel({
-  //     ...rowModesModel,
-  //     [id]: { mode: GridRowModes.View, ignoreModifications: true },
-  //   });
-
-  //   const editedRow = rows.find((row) => row.id === id);
-  //   if (editedRow!.isNew) {
-  //     setRows(rows.filter((row) => row.id !== id));
-  //   }
-  // };
-
-  // const processRowUpdate = (newRow: GridRowModel) => {
-  //   const updatedRow = { ...newRow, isNew: false };
-  //   setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-  //   return updatedRow;
-  // };
+  const handleCancelClick = (id: GridRowId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -141,7 +132,7 @@ export default function ProjectsTable() {
               icon={<CancelIcon />}
               label="Cancel"
               className="textPrimary"
-              // onClick={handleCancelClick(id)}
+              onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
