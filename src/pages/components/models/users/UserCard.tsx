@@ -9,10 +9,6 @@ export interface User {
   role: "ADMIN" | "USER";
 }
 
-interface UserCardProps {
-  user: User;
-}
-
 const CustomCard = styled(Card)`
   width: 345px;
   margin: 1rem;
@@ -30,7 +26,11 @@ const CustomAvatar = styled(Avatar)`
   margin-bottom: 1rem;
 `;
 
-const UserCard: React.FC<UserCardProps> = ({ user }) => {
+const UserCard = ({ user }: { user?: User }) => {
+  if (!user) {
+    return null;
+  }
+
   const { name, email, image, role } = user;
 
   return (
