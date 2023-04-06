@@ -15,6 +15,15 @@ const updateProjectPayloadSchema = z.object({
   description: z.string(),
 });
 
+const deleteProjectPayloadSchema = z.object({
+  id: z.string(),
+});
+// export type DeleteProjectPayloadType = z.infer<typeof deleteProjectPayloadSchema>
+
+export type DeleteProjectPayloadType = z.infer<
+  typeof deleteProjectPayloadSchema
+>;
+
 export type CreateProjectPayloadType = z.infer<
   typeof createProjectPayloadSchema
 >;
@@ -31,30 +40,9 @@ export const projectController = createTRPCRouter({
     .input(createProjectPayloadSchema)
     .mutation(({ input }) => projectModel.createProject(input)),
   deleteProject: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .mutation(
-      async ({ input }) =>
-        await prisma.project.delete({
-          where: {
-            id: input.id,
-          },
-        })
-    ),
+    .input(deleteProjectPayloadSchema)
+    .mutation(async ({ input }) => projectModel.deleteProject(input)),
   updateProject: protectedProcedure
     .input(updateProjectPayloadSchema)
-    .mutation(({ input }) =>
-      prisma.project.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          title: input.title,
-          description: input.description,
-        },
-      })
-    ),
+    .mutation(({ input }) => projectModel.updateProject(input)),
 });
